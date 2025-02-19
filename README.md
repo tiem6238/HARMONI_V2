@@ -120,3 +120,19 @@ We borrowed code from the below amazing resources:
 
 ## Contact
 [Zhenzhen Weng](https://zzweng.github.io/) (zzweng AT stanford DOT edu)
+
+## Citation
+If you find this work useful, please consider citing:
+```
+@article{
+weng2025harmoni,
+author = {Zhenzhen Weng  and Laura Bravo-S\'anchez  and Zeyu Wang  and Christopher Howard  and Maria Xenochristou  and Nicole Meister  and Angjoo Kanazawa  and Arnold Milstein  and Elika Bergelson  and Kathryn L. Humphreys  and Lee M. Sanders  and Serena Yeung-Levy },
+title = {Artificial intelligence–powered 3D analysis of video-based caregiver-child interactions},
+journal = {Science Advances},
+volume = {11},
+number = {8},
+pages = {eadp4422},
+year = {2025},
+doi = {10.1126/sciadv.adp4422},
+URL = {https://www.science.org/doi/abs/10.1126/sciadv.adp4422}}
+```
