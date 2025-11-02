@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+sudo apt-get update
+sudo apt-get install -y \
+  build-essential python3-dev libeigen3-dev \
+  libosmesa6-dev libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev pkg-config
+
