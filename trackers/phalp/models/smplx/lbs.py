@@ -261,6 +261,18 @@ def blend_shapes(betas, shape_disps):
     torch.tensor BxVx3
         The per-vertex displacement due to shape deformation
     '''
+    # Slice if we have more than 10 betas
+    Lb = betas.shape[-1]
+    Ls = shape_disps.shape[-1]
+
+    # If shapedirs has more components than betas, slice shapedirs
+    if Ls > Lb:
+        shape_disps = shape_disps[..., :Lb]
+        Ls = Lb
+    # If betas has more components than shapedirs, slice betas (just in case)
+    elif Lb > Ls:
+        betas = betas[..., :Ls]
+        Lb = Ls
 
     # Displacement[b, m, k] = sum_{l} betas[b, l] * shape_disps[m, k, l]
     # i.e. Multiply each shape displacement by its corresponding beta and

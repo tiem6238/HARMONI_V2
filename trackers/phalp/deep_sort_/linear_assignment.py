@@ -4,7 +4,7 @@ Modified code from https://github.com/nwojke/deep_sort
 
 from __future__ import absolute_import
 import numpy as np
-from sklearn.utils.linear_assignment_ import linear_assignment
+from scipy.optimize import linear_sum_assignment
 
 INFTY_COST = 1e+5
 
@@ -27,7 +27,11 @@ def min_cost_matching(
     cost_matrix                             = np.log(cost_matrix)
     max_distance                            = np.log(max_distance)
     
-    indices = linear_assignment(cost_matrix)  
+    # SciPy's Hungarian algorithm
+    row_ind, col_ind = linear_sum_assignment(cost_matrix)
+
+    # Convert (row_ind, col_ind) -> array of shape (num_matches, 2)
+    indices = np.stack([row_ind, col_ind], axis=1)
 
     matches, unmatched_tracks, unmatched_detections = [], [], []
     for col, detection_idx in enumerate(detection_indices):

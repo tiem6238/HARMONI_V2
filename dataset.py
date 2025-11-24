@@ -20,6 +20,8 @@ class Dataset(data.Dataset):
     Pipeline 2: grounded dino, run tracker.
     """ 
     def __init__(self, img_folder, out_folder, tracker_type, pipeline, cfg):
+        if isinstance(cfg, dict):
+            cfg = omegaconf.OmegaConf.create(cfg)
         self.img_folder = img_folder
         self.out_folder = out_folder
         img_paths = sorted(glob(os.path.join(img_folder, '*')))
@@ -62,8 +64,11 @@ class Dataset(data.Dataset):
                         'bbox': xywh
                     }
                     num_persons += 1
-                    
-            body_type_classifier = BodyTypeClassifier(cfg.body_type_classifier_path)
+
+            self.person_to_img = person_to_img
+            self.person_to_det = person_to_det
+            path = cfg.get("body_type_classifier_path") if isinstance(cfg, dict) else cfg.body_type_classifier_path
+            body_type_classifier = BodyTypeClassifier(path)
             track_to_id, id_to_track, track_id_to_detections = self.run_tracking(person_to_det, tracker_type=tracker_type)
             track_body_types = body_type_classifier(track_id_to_detections, self.img_folder, out_folder, classifier=None)
 

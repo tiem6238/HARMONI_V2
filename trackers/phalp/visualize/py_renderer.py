@@ -1,5 +1,6 @@
 import os
-
+os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+print("PYOPENGL_PLATFORM =", os.environ.get("PYOPENGL_PLATFORM"))
 import numpy as np
 import pyrender
 import torch

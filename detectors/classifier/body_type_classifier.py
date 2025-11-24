@@ -51,7 +51,7 @@ class BodyTypeClassifier():
             all_cropped = []
             for i in sampled_idxs:
                 img_path = os.path.join(img_dir, detections[i]["img_name"])
-                img = Image.open(img_path)
+                img = Image.open(img_path).convert("RGB")
                 keypoints = detections[i]["keypoints_25"]
                 if keypoints[:, 2].sum() > 0:
                     box_dict = cropout_openpose_torso(

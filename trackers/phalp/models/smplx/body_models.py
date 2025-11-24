@@ -278,6 +278,7 @@ class SMPL(nn.Module):
 
         # The shape components
         shapedirs = data_struct.shapedirs
+
         # The shape components
         self.register_buffer(
             'shapedirs',

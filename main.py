@@ -1,5 +1,7 @@
 from collections import defaultdict
 import os, sys, json
+os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+print("PYOPENGL_PLATFORM =", os.environ.get("PYOPENGL_PLATFORM"))
 import os.path as osp
 import joblib
 import yaml
@@ -71,7 +73,9 @@ def main(args):
     dataset.print_info()
 
     track_overwrite = eval(args.track_overwrite)
-    if len(track_overwrite) > 0:
+
+    # Only use it if it's actually a dict with entries
+    if isinstance(track_overwrite, dict) and len(track_overwrite) > 0:
         logger.info('Overwriting body types for tracks: ' + str(track_overwrite))
         for track_id, body_type in track_overwrite.items():
             dataset.track_body_types[track_id][0] = body_type
