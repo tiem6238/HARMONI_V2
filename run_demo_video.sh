@@ -1,0 +1,1 @@
+python main.py --config data/cfgs/harmoni.yaml --video data/demo/giphy.gif --out_folder ./results/giphy --keep contains_only_both --ground_anchor child_bottom --fps 5 --save_gif --track_overwrite "{2: 'infant', 11: 'infant'}"

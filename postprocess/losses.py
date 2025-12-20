@@ -48,6 +48,9 @@ def perspective_projection(points, rotation, translation,
     # Apply perspective distortion
     projected_points = points / points[:,:,-1].unsqueeze(-1)
 
+    # Ensure K has the same dtype as projected_points (Float32 from the model)
+    K = K.to(projected_points.dtype)
+
     # Apply camera intrinsics
     projected_points = torch.einsum('bij,bkj->bki', K, projected_points)
 
@@ -142,6 +145,13 @@ def loss_ground_plane(anchor, normal, point1, point2):
     '''
 
     # take de predicted 3d joints and measure dist to plane w normal
+    
+    # Make sure everything is the same dtype (match model joints)
+    dtype = point1.dtype
+    anchor = anchor.to(dtype)
+    normal = normal.to(dtype)
+    point1 = point1.to(dtype)
+    point2 = point2.to(dtype)
 
     # dot product w normal
     point_to_anchor = (anchor - point1) / torch.norm(anchor - point1, 2, -1, keepdim=True)

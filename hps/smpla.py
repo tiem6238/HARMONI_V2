@@ -195,6 +195,15 @@ def lbs(betas, pose, v_template, shapedirs, posedirs, J_regressor, parents,
             The joints of the model
     '''
 
+    # ---- Ensure common dtype across all tensors (fix Float/Double issues) ----
+    ref_dtype = v_template.dtype  # SMIL template is the natural reference
+    betas       = betas.to(ref_dtype)
+    pose        = pose.to(ref_dtype)
+    v_template  = v_template.to(ref_dtype)
+    shapedirs   = shapedirs.to(ref_dtype)
+    J_regressor = J_regressor.to(ref_dtype)
+    lbs_weights = lbs_weights.to(ref_dtype)
+
     batch_size = betas.shape[0]
     # Add shape contribution
     v_shaped = v_template + torch.einsum('bl,mkl->bmk', [betas, shapedirs])
@@ -354,10 +363,21 @@ class SMPLA_parser(nn.Module):
 
             # SMIL beta - 10 dims, only need the estimated betas, kid_offsets are not used
             if separate_smil_betas:
-                verts[baby_mask], joints[baby_mask] = self.smil_model(betas=betas[baby_mask,11:], poses=poses[baby_mask], root_align=root_align)
+                smil_verts, smil_joints = self.smil_model(
+                    betas=betas[baby_mask, 11:],
+                    poses=poses[baby_mask],
+                    root_align=root_align,
+                )
             else:
-                verts[baby_mask], joints[baby_mask] = self.smil_model(betas=betas[baby_mask,:10], poses=poses[baby_mask], root_align=root_align)
-            
+                smil_verts, smil_joints = self.smil_model(
+                    betas=betas[baby_mask, :10],
+                    poses=poses[baby_mask],
+                    root_align=root_align,
+                )
+
+            verts[baby_mask]  = smil_verts.to(verts.dtype)
+            joints[baby_mask] = smil_joints.to(joints.dtype)
+                
             # SMPLA beta - 11 dims, the estimated betas (10) + kid_offsets (1)
             if adult_mask.sum()>0:
                 verts[adult_mask], joints[adult_mask] = self.smpla_model(betas=betas[adult_mask,:11], poses=poses[adult_mask], root_align=root_align)

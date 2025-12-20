@@ -175,6 +175,15 @@ def lbs(betas, pose, v_template, shapedirs, posedirs, J_regressor, parents,
     '''
     #import ipdb; ipdb.set_trace()
 
+    # ---- Ensure common dtype across all tensors (fix Float/Double issues) ----
+    ref_dtype = v_template.dtype  # SMIL template is the natural reference
+    betas       = betas.to(ref_dtype)
+    pose        = pose.to(ref_dtype)
+    v_template  = v_template.to(ref_dtype)
+    shapedirs   = shapedirs.to(ref_dtype)
+    J_regressor = J_regressor.to(ref_dtype)
+    lbs_weights = lbs_weights.to(ref_dtype)
+
     batch_size = max(betas.shape[0], pose.shape[0])
     device = betas.device
 
@@ -273,6 +282,11 @@ def blend_shapes(betas, shape_disps):
     elif Lb > Ls:
         betas = betas[..., :Ls]
         Lb = Ls
+
+    # ---- NEW: make sure dtypes match ----
+    if betas.dtype != shape_disps.dtype:
+        betas = betas.to(shape_disps.dtype)
+    # -------------------------------------
 
     # Displacement[b, m, k] = sum_{l} betas[b, l] * shape_disps[m, k, l]
     # i.e. Multiply each shape displacement by its corresponding beta and

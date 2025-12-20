@@ -80,7 +80,17 @@ def images_to_gif(image_dir, gif_path, fps):
             images.append(imageio.imread(os.path.join(image_dir, filename)))
     
     # `fps=50` == `duration=20` (1000 * 1/50).
-    duration = 1000 * 1/fps
+    
+    # duration is in seconds per frame for imageio
+    if fps is None or fps <= 0:
+        duration = 0.1  # default ~10 fps
+    else:
+        duration = 1.0 / float(fps)
+
+    # Clamp to avoid GIF overflow / weird edge cases
+    duration = float(max(min(duration, 10.0), 0.01))
+    print(f"[images_to_gif] fps={fps}, duration={duration} sec/frame, n_frames={len(images)}")
+
     imageio.mimsave(gif_path, images, duration=duration)
 
 

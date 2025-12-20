@@ -179,7 +179,11 @@ def hmr(smpl_mean_params, pretrained=True, **kwargs):
     """
     model = HMR(Bottleneck, [3, 4, 6, 3],  smpl_mean_params, **kwargs)
     if pretrained:
-        resnet_imagenet = resnet.resnet50(weights=resnet.ResNet50_Weights.IMAGENET1K_V1)
+        try:
+            resnet_imagenet = resnet.resnet50(weights=resnet.ResNet50_Weights.IMAGENET1K_V1)
+        except AttributeError:
+            # fall back to older torchvision 0.11.2 version
+            resnet_imagenet = resnet.resnet50(pretrained=True)
         model.load_state_dict(resnet_imagenet.state_dict(),strict=False)
     return model
 

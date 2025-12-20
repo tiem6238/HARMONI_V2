@@ -21,6 +21,7 @@ def get_colors():
         'pinkish': np.array([204, 77, 77]),
         'dark_blue': np.array((69,117,255)),
         'dark_green': np.array((21,89,5)),
+        'dark_purple': np.array([90, 30, 120]),
     }
     return colors
 
